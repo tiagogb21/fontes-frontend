@@ -1,4 +1,4 @@
-### Project Manager
+# Project Manager
 
 O projeto tem como objetivo criar um aplicativo para fazer o cadastro de projetos, bem como a atualização. Também é possível recuperar dados dos projetos já cadastrados no banco de dados, assim como deletá-los..
 
@@ -22,14 +22,14 @@ O projeto tem como objetivo criar um aplicativo para fazer o cadastro de projeto
   <li>Criar projeto</li>
 </ol>
 
-# Proteção de rotas:
+### Proteção de rotas:
 
 Para garantir o devido acesso aos dados utilizou-se a biblioteca Auth0
 
-# Verificação de dados:
+### Verificação de dados:
 
 Para garantir que os dados recebidos tenham a estrutura adequada utilizou-se a biblioteca Yup
 
-# Responsividade:
+### Responsividade:
 
 O projeto foi criado com o objetivo de atender a responsividade.
