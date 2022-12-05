@@ -29,3 +29,7 @@ Para garantir o devido acesso aos dados utilizou-se a biblioteca Auth0
 # Verificação de dados:
 
 Para garantir que os dados recebidos tenham a estrutura adequada utilizou-se a biblioteca Yup
+
+# Responsividade:
+
+O projeto foi criado com o objetivo de atender a responsividade.
