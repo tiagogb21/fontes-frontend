@@ -66,6 +66,8 @@ const ProjectDetails = (props: IProps) => {
         border: "1px solid black",
         padding: "12px",
         borderRadius: "6px",
+        width: '280px',
+        margin: '5vw 0'
       }}
     >
       <div

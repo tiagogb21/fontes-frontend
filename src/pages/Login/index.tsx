@@ -69,6 +69,8 @@ export default function Login() {
     localStorage.setItem('token', access_token);
     localStorage.setItem('username', user.username);
 
+    console.log(1)
+
     navigate('/all')
   };
 

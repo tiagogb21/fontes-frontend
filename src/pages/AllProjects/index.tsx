@@ -35,8 +35,10 @@ const AllProjects: React.FC = () => {
   return (
     <div
       style={{
+        width: '100%',
         display: 'grid',
         gridTemplateColumns: matches ? '30% 30% 30%' : '',
+        justifyItems: 'center',
         gap: '3vw',
       }}
     >
