@@ -39,7 +39,6 @@ const UpdateProject = () => {
       const token = localStorage.getItem("token") as string;
       const result = await axiosGetProjects(username, token);
       const filterProject = result.data.filter((project: IProject) => project.id === id);
-      console.log(...filterProject)
       setProject(filterProject[0]);
     };
     getProjects();
@@ -50,10 +49,8 @@ const UpdateProject = () => {
   };
 
   const handleClickDone = async () => {
-    console.log(project);
-    setVerifyButton(true);
     const result = await axiosUpdateProjectsToDone(username, id, token);
-    console.log(result);
+    setVerifyButton(true);
   }
 
   return (
@@ -202,7 +199,7 @@ const UpdateProject = () => {
       <p>Clique no botão 'false' para atualizar o estado DONE para 'true'</p>
       {
         verifyButton && (
-          <p>Projeto atualizado com sucesso!</p>
+          <p style={{ color: 'blue', fontWeight: 'bold' }}>Projeto atualizado com sucesso! Done atualizado para true.</p>
         )
       }
       <p>Caso queira atualizar os dados, clique no botão 'atualizar'</p>

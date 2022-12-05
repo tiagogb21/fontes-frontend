@@ -7,7 +7,7 @@ const DB_URL = 'http://localhost:8080';
 //   'My-Custom-Header': 'foobar'
 // };
 
-export const createUser = (
+export const createUser = async (
   name: string,
   username: string,
   password: string,
@@ -20,11 +20,16 @@ export const createUser = (
     passwordConfirm,
   }
 
-  return axios({
-    method: 'post',
-    url: `${ DB_URL }/users`,
-    data,
-  });
+  try {
+    const response = await axios({
+      method: 'post',
+      url: `${DB_URL}/users`,
+      data,
+    });
+    return response.data;
+  } catch (error) {
+    return error;
+  }
 }
 
 export const loginUser = (
@@ -40,7 +45,8 @@ export const loginUser = (
     method: 'post',
     url: `${ DB_URL }/login`,
     data,
-  });
+  }).then(response => response.data)
+    .catch(error => error);
 }
 
 export const axiosGetProjects = async (username: string, token: string) => {

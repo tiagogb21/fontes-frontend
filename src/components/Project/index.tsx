@@ -33,10 +33,7 @@ export default function Project() {
 
   const handleClick = () => {
     setVerify(true)
-    // setProjects([
-    //   ...projects,
-    //   newProject,
-    // ]);
+
   };
 
   const handleClickDelete = (index: number) => {

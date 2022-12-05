@@ -27,6 +27,7 @@ const initialState = {
 
 export default function Register() {
   const [user, setUser] = useState(initialState)
+  const [verifyRegister, setVerifyRegister] = useState(false)
 
   const navigate = useNavigate();
 
@@ -45,13 +46,15 @@ export default function Register() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    setVerifyRegister(false);
+
     const data = new FormData(event.currentTarget);
 
-    const result = await validateError(user);
+    // const result = await validateError(user);
 
-    if (result) {
-      return;
-    }
+    // if (result) {
+    //   return;
+    // }
 
     const register = await createUser(
       data.get('name') as string,
@@ -60,9 +63,14 @@ export default function Register() {
       data.get('password-confirm') as string,
     )
 
-    const { access_token } = register.data;
+    console.log(register)
+
+    const { access_token } = register;
+
+    console.log(access_token)
 
     if(!access_token) {
+      setVerifyRegister(true);
       return;
     }
 
@@ -90,6 +98,17 @@ export default function Register() {
           <Typography component="h1" variant="h5">
             Cadastrar
           </Typography>
+          {
+              verifyRegister && (
+                <Grid container>
+                  <Grid item xs>
+                    <Typography variant="body2" color="error">
+                      Usuário já cadastrado
+                    </Typography>
+                  </Grid>
+                </Grid>
+              )
+            }
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               id="register-name"

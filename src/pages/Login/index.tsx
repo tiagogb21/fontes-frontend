@@ -25,7 +25,8 @@ const initialState = {
 }
 
 export default function Login() {
-  const [user, setUser] = useState(initialState)
+  const [user, setUser] = useState(initialState);
+  const [verifyLogin, setVerifyLogin] = useState(false);
 
   const { validateError, handleErrorMessage } = useFormValidation<RegisterForm>(
     "register"
@@ -43,6 +44,8 @@ export default function Login() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setVerifyLogin(false);
+
     const data = new FormData(event.currentTarget);
 
     const result = await validateError(user);
@@ -56,9 +59,12 @@ export default function Login() {
       data.get('password') as string,
     )
 
-    const { access_token } = login.data;
+    const { access_token } = login;
+
+    console.log(access_token)
 
     if(!access_token) {
+      setVerifyLogin(true);
       return;
     }
 
@@ -86,6 +92,17 @@ export default function Login() {
           <Typography component="h1" variant="h5">
             Entrar
           </Typography>
+          {
+              verifyLogin && (
+                <Grid container>
+                  <Grid item xs>
+                    <Typography variant="body2" color="error">
+                      Usuário ou senha inválidos
+                    </Typography>
+                  </Grid>
+                </Grid>
+              )
+            }
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               id="login-username"
