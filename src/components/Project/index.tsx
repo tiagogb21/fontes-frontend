@@ -11,14 +11,8 @@ import { Button } from '@material-ui/core';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import FormDialog from '../FormDialog';
 import { Box } from '@mui/material';
-
-interface IProject {
-  title: string;
-  zipCode: string;
-  cost: number;
-  deadline: string;
-  username: string;
-}
+import { IProject } from '../../interfaces/project.interface';
+import { axiosDeleteProjects } from '../../services/fetch';
 
 export default function Project() {
   const [verify, setVerify] = useState(false);
@@ -34,10 +28,6 @@ export default function Project() {
   const handleClick = () => {
     setVerify(true)
 
-  };
-
-  const handleClickDelete = (index: number) => {
-    setProjects(projects.filter((_, i) => i !== index));
   };
 
   return (
@@ -110,7 +100,6 @@ export default function Project() {
             >
               Done
             </TableCell>
-            <TableCell></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -130,16 +119,6 @@ export default function Project() {
                 <TableCell align="center">{project.cost}</TableCell>
                 <TableCell align="center">{project.deadline}</TableCell>
                 <TableCell align="center">false</TableCell>
-                <TableCell align="center">
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    startIcon={<DeleteOutlineOutlinedIcon />}
-                    onClick={() => handleClickDelete(index)}
-                  >
-                    Excluir
-                  </Button>
-                </TableCell>
               </TableRow>
             ))
           }

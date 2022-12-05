@@ -49,6 +49,25 @@ export const loginUser = (
     .catch(error => error);
 }
 
+export const axiosCreateProject = async (username: string, token: string, data: any) => {
+  return await axios.post(`${ DB_URL }/project`,
+  {
+    ...data,
+    zip_code: +data.zipCode.replace('-', ''),
+    username,
+  },
+  {
+    headers: {
+      'token': token,
+      username,
+    }
+  }).then(response => {
+    return response.data
+  }
+  )
+  .catch(error => error);
+}
+
 export const axiosGetProjects = async (username: string, token: string) => {
   return await axios.get(`${ DB_URL }/projects`, {
     headers: {
@@ -71,8 +90,12 @@ export const axiosGetProjectById = (username: string, id: string) => {
 }
 
 export const axiosUpdateProject = async (username: string, id: string, token: string, data: any) => {
-  console.log(data);
-  return await axios.put(`${ DB_URL }/projects/${id}`, data, {
+  return await axios.put(`${ DB_URL }/projects/${id}`,
+  {
+    ...data,
+    deadline: data.deadline.replace(' ', '')
+  },
+  {
     headers: {
       'token': token,
       username,
@@ -87,14 +110,6 @@ export const axiosUpdateProjectsToDone = async (username: string, id: string, to
       username,
     }
   })
-  // return await axios.patch(`${ DB_URL }/projects/${id}/done`, {
-  //   options: {
-  //     headers: {
-  //       'token': token,
-  //       username,
-  //     }
-  //   }
-  // })
 }
 
 export const axiosDeleteProjects = async (username: string, id: string, token: string) => {

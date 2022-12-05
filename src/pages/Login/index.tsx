@@ -61,8 +61,6 @@ export default function Login() {
 
     const { access_token } = login;
 
-    console.log(access_token)
-
     if(!access_token) {
       setVerifyLogin(true);
       return;

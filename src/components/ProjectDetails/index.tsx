@@ -92,7 +92,7 @@ const ProjectDetails = (props: IProps) => {
           Excluir
         </Button>
       </div>
-      <h2>{title}</h2>
+      <h2 style={{ overflow: 'hidden' }}>{title}</h2>
       <h4
         style={{
           color: "red",

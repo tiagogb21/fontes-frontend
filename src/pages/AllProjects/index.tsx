@@ -36,7 +36,7 @@ const AllProjects: React.FC = () => {
     <div
       style={{
         display: 'grid',
-        gridTemplateColumns: matches ? 'repeat(3, 1fr)' : '',
+        gridTemplateColumns: matches ? '30% 30% 30%' : '',
         gap: '3vw',
       }}
     >

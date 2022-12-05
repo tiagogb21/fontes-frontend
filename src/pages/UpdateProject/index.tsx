@@ -10,48 +10,76 @@ import {
   TextField,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { axiosGetProjects, axiosUpdateProject, axiosUpdateProjectsToDone } from "../../services/fetch";
+import {
+  axiosGetProjects,
+  axiosUpdateProject,
+  axiosUpdateProjectsToDone,
+} from "../../services/fetch";
 import { useLocation } from "react-router-dom";
+import useFormValidation from "../../utils/validation/formValidation/useFormValidation";
+import { RegisterFormProject } from "../../utils/validation/formValidation/schemas/project.schema";
+import { IProject } from "../../interfaces/project.interface";
 
 const username = localStorage.getItem("username") as string;
 const token = localStorage.getItem("token") as string;
 
-interface IProject {
-  id: string;
-  title: string;
-  zipCode: string;
-  cost: number;
-  deadline: string;
-  username: string;
-}
-
 const UpdateProject = () => {
-  const [project, setProject]= useState<IProject>();
-  const [ verifyButton, setVerifyButton ] = useState(false);
-  const [projectUpdate, setProjectUpdate] = useState<IProject>();
+  const [project, setProject] = useState<IProject | any>();
+  const [verifyButton, setVerifyButton] = useState(false);
+  const [verifyUpdate, setVerifyUpdate] = useState(false);
 
   const location = useLocation();
-  const id = location.pathname.split('/')[2]
+  const id = location.pathname.split("/")[2];
 
   useEffect(() => {
     const getProjects = async () => {
       const username = localStorage.getItem("username") as string;
       const token = localStorage.getItem("token") as string;
       const result = await axiosGetProjects(username, token);
-      const filterProject = result.data.filter((project: IProject) => project.id === id);
-      setProject(filterProject[0]);
+      const filterProject = result.data.filter(
+        (project: any) => project.id === id
+      )[0];
+      setProject({
+        ...filterProject,
+        zipCode: filterProject.zip_code,
+      });
     };
     getProjects();
-  }, [])
+  }, []);
+
+  const { validateError, handleErrorMessage } =
+    useFormValidation<RegisterFormProject>("project");
 
   const handleClickUpdate = async (index: string) => {
-    return await axiosUpdateProject(username, index, token, project);
+    if (!project) return;
+
+    const result = await validateError(project);
+
+    if (!result) {
+      return;
+    }
+
+    setVerifyUpdate(true);
+
+    const updateProject = await axiosUpdateProject(username, index, token, project);
+
+    if (updateProject.status !== 200) {
+      setVerifyUpdate(false);
+      return;
+    }
+
+    setVerifyUpdate(true);
+
+    console.log(updateProject)
   };
 
   const handleClickDone = async () => {
     const result = await axiosUpdateProjectsToDone(username, id, token);
+    if (result.status !== 200) {
+      alert("Erro ao atualizar projeto");
+    }
     setVerifyButton(true);
-  }
+  };
 
   return (
     <TableContainer>
@@ -101,66 +129,73 @@ const UpdateProject = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          <TableRow
-            sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-          >
-            <TableCell
-              key={project?.title}
+          {project && (
+            <TableRow
+              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
-
-              <TextField
-                name="cost"
-                value={ project?.title }
-                onChange={(e) => {
-                  setProjectUpdate((prev) => ({
-                    ...prev,
-                    title: e.target.value,
-                  } as IProject));
-                }}
-              />
-            </TableCell>
-            <TableCell component="th" scope="row">
-              <TextField
-                name="cost"
-                type="number"
-                value={ project?.zipCode }
-                onChange={(e) => {
-                  setProjectUpdate((prev) => ({
-                    ...prev,
-                    zipCode: e.target.value,
-                  }  as IProject));
-                }}
-              />
-            </TableCell>
-            <TableCell align="center">
-              <TextField
-                name="cost"
-                value={ project?.cost }
-                onChange={(e) => {
-                  setProjectUpdate((prev) => ({
-                    ...prev,
-                    cost: +e.target.value,
-                  } as IProject));
-                  console.log(project)
-                }}
-              />
-            </TableCell>
-            <TableCell align="center">
-              <TextField
-                name="cost"
-                type="date"
-                value={ project?.deadline }
-                onChange={(e) => {
-                  setProjectUpdate((prev) => ({
-                    ...prev,
-                    title: e.target.value,
-                  } as IProject));
-                }}
-              />
+              <TableCell key={project?.title}>
+                <TextField
+                  margin="dense"
+                  name="title"
+                  type="text"
+                  value={project.title}
+                  onChange={(e) => {
+                    setProject({
+                      ...project,
+                      title: e.target.value,
+                    })
+                  }}
+                  {...handleErrorMessage("title")}
+                />
               </TableCell>
-            <TableCell align="center">
-              {
-                verifyButton ? (
+              <TableCell component="th" scope="row">
+                <TextField
+                  margin="dense"
+                  name="zip_code"
+                  type="text"
+                  value={project.zipCode}
+                  onChange={(e) => {
+                    setProject({
+                      ...project,
+                      zipCode: e.target.value,
+                    })
+                  }}
+                  {...handleErrorMessage("zipCode")}
+                />
+              </TableCell>
+              <TableCell align="center">
+                <TextField
+                  margin="dense"
+                  type="number"
+                  name="cost"
+                  value={project.cost}
+                  onChange={(e) => {
+                    setProject({
+                      ...project,
+                      cost: +e.target.value,
+                    })
+                    console.log(project);
+                  }}
+                  {...handleErrorMessage("title")}
+                />
+              </TableCell>
+              <TableCell align="center">
+                <TextField
+                  name="deadline"
+                  type="date"
+                  value={project.deadline}
+                  onChange={(e) => {
+                    console.log(new Date(project.deadline).toISOString().split("T")[0])
+                    setProject({
+                      ...project,
+                      deadline: e.target.value,
+                    });
+                  }}
+                  {...handleErrorMessage("deadline")}
+                />
+              </TableCell>
+              <TableCell align="center">
+                {verifyButton ? (
                   <Button
                     onClick={handleClickDone}
                     style={{
@@ -180,29 +215,36 @@ const UpdateProject = () => {
                   >
                     false
                   </Button>
-                )
-              }
-            </TableCell>
-            <TableCell align="center">
-              <Button
-                variant="contained"
-                color="secondary"
-                startIcon={<EditIcon />}
-                onClick={() => handleClickUpdate(id)}
-              >
-                Atualizar
-              </Button>
-            </TableCell>
-          </TableRow>
+                )}
+              </TableCell>
+              <TableCell align="center">
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  startIcon={<EditIcon />}
+                  onClick={() => handleClickUpdate(id)}
+                >
+                  Atualizar
+                </Button>
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
       <p>Clique no botão 'false' para atualizar o estado DONE para 'true'</p>
+      {verifyButton && (
+        <p style={{ color: "blue", fontWeight: "bold" }}>
+          Projeto atualizado com sucesso! Done atualizado para true.
+        </p>
+      )}
+      <p>Caso queira atualizar os dados, clique no botão 'atualizar'</p>
       {
-        verifyButton && (
-          <p style={{ color: 'blue', fontWeight: 'bold' }}>Projeto atualizado com sucesso! Done atualizado para true.</p>
+        verifyUpdate && (
+        <p style={{ color: "blue", fontWeight: "bold" }}>
+          Projeto atualizado com sucesso!
+        </p>
         )
       }
-      <p>Caso queira atualizar os dados, clique no botão 'atualizar'</p>
     </TableContainer>
   );
 };

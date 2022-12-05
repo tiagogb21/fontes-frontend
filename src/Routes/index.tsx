@@ -22,11 +22,11 @@ const Router: React.FC = () => {
 
   return (
     <Routes>
-      <Route path="/update/:id" element={<UpdateProject />} />
-      <Route path="/all" element={<AllProjects />} />
-      <Route path="/new" element={<Project />} />
       <Route path='/' element={<ProtectedRoute/>}>
         <Route path='/' element={<Project/>}/>
+        <Route path="/update/:id" element={<UpdateProject />} />
+        <Route path="/all" element={<AllProjects />} />
+        <Route path="/new" element={<Project />} />
       </Route>
       <Route path="/login" element={ <Login /> } />
       <Route path="/register" element={ <Register /> } />

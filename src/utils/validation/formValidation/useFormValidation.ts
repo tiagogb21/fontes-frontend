@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 
 import validateForm, { ErrorInterface } from '.';
 import { ILogin } from '../../../interfaces/login.interface';
+import { IProject } from '../../../interfaces/project.interface';
 import { IRegister } from '../../../interfaces/register.interface';
 import { FormName } from './testSchemas';
 
@@ -13,6 +14,7 @@ const useFormValidation = <Form = DefaultForm>(formName: FormName) => {
   const validateError = async (formParams:
     IRegister
     | ILogin
+    | IProject
   ) => {
     const errors = await validateForm(formParams, formName);
 
@@ -20,6 +22,7 @@ const useFormValidation = <Form = DefaultForm>(formName: FormName) => {
       setErrorItems(errors);
       return false;
     }
+
     return true;
   }
 
